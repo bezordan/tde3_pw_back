@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: Movie Catalog API
+  version: 1.0.0
+paths:
+  /movie:
+    get:
+      summary: Retrieve all movies
+      responses:
+        '200':
+          description: A list of movies
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: "oppenheimer"
+                  url_poster: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn0.gstatic.com%2Fimages%3Fq%3Dtbn%3AANd9GcQb0niU5_-nJcGruRTitqp6LWLeP5Av8LnPWcJ4eUz8avZ9zpXb&psig=AOvVaw2_T6a5qOdWxL9TyowxaWOE&ust=1701010466746000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKj3lf-z34IDFQAAAAAdAAAAABAE"
+                  synopsis: "Physicist J. Robert Oppenheimer works with a team of scientists during the Manhattan Project, leading to the development of the atomic bomb."
+                  price: 2.55
+
+    post:
+      summary: Create a new movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: "Inception"
+              price: 12.99
+              synopsis: "Inception is a mind-bending science fiction film directed by Christopher Nolan. It explores the concept of shared dreaming and features a skilled thief who is capable of entering the dreams of others to steal their secrets."
+              url_poster: "https://example.com/inception_poster.jpg"
+            schema:
+              $ref: '#/components/schemas/RecordMovie'
+      responses:
+        '201':
+          description: Movie created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '500':
+          description: Internal Server Error
+
+  /movie/{id}:
+    get:
+      summary: Retrieve a specific movie by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the movie
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: The requested movie
+          content:
+            application/json:
+              example:
+                id: 1
+                name: "Inception"
+                price: 12.99
+                synopsis: "Inception is a mind-bending science fiction film directed by Christopher Nolan. It explores the concept of shared dreaming and features a skilled thief who is capable of entering the dreams of others to steal their secrets."
+                url_poster: "https://example.com/inception_poster.jpg"
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Movie not found
+
+    put:
+      summary: Update a specific movie by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the movie
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordMovie'
+      responses:
+        '200':
+          description: The updated movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Movie not found
+
+    delete:
+      summary: Delete a specific movie by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the movie
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Movie deleted successfully
+          content:
+            application/json:
+              example:
+                message: "Filme deletado."
+        '404':
+          description: Movie not found
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url_poster:
+          type: string
+        synopsis:
+          type: string
+        price:
+          type: number
+      required:
+        - name
+
+    RecordMovie:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        synopsis:
+          type: string
+        url_poster:
+          type: string
+      required:
+        - name
